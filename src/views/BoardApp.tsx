@@ -19,7 +19,7 @@ export default function BoardApp() {
 
     return (
         <section>
-            
+            board app here!
         </section>
     )
 }
