@@ -19,7 +19,9 @@ export default function BoardApp() {
 
     return (
         <section>
-            board app here!
+            <h1 className="text-3xl font-bold underline">
+               board app here!
+               </h1> 
         </section>
     )
 }
