@@ -1,0 +1,12 @@
+.btn {
+  width: 21.875em;  
+  height: 3.125em;  
+  background-color: $black;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: $grayblue;
+  }
+
+
+}

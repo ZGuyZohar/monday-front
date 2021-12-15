@@ -1,0 +1,103 @@
+/* Breakpoint mixins */
+
+@mixin for-mobile-layout {
+    @media (max-width: $mobile-breakpoint + 40) {
+        @content;
+    }
+}
+
+@mixin for-narrow-layout {
+    @media (min-width: $mobile-breakpoint + 40) {
+        @content;
+    }
+}
+
+@mixin for-normal-layout {
+    @media (min-width: $narrow-breakpoint + 40) {
+        @content;
+    }
+}
+
+@mixin for-wide-layout {
+    @media (min-width: $normal-breakpoint + 40) {
+        @content;
+    }
+}
+
+/* Media  Mixins */
+@mixin aspect-ratio($width, $height) {
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        display: block;
+        content: "";
+        width: 100%;
+        padding-top: ($height / $width) * 100%;
+    }
+
+    >* {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+    >img {
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+// Mixin for removing hover efects on iphone screen
+@mixin hover-supported {
+    @media not all and (pointer: coarse) {
+        &:hover {
+            @content;
+        }
+    }
+}
+
+@mixin animation-float {
+
+    @keyframes float {
+        0% {
+            transform: translatey(0px);
+        }
+
+        50% {
+            transform: translatey(-30px);
+        }
+
+        100% {
+            transform: translatey(0px);
+        }
+    }
+}
+
+@mixin animation-scale {
+
+    @keyframes scale {
+        0% {
+            transform: scale(1) translatey(0px);
+        }
+
+        25% {
+            transform: scale(1.25) translatey(-20px);
+        }
+
+        50% {
+            transform: scale(1) translatey(10px);
+        }
+
+        75% {
+            transform: scale(1.25) translatey(-20px);
+            
+        }
+        
+        100% {
+            transform: scale(1) translatey(0px);
+        }
+    }
+}
