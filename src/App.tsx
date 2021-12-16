@@ -1,5 +1,5 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { AppHeader } from "./styles/cmps/AppHeader";
+import { AppHeader } from "./cmps/AppHeader";
 import BoardApp from "./views/BoardApp";
 import { HomePage } from "./views/HomePage";
 
