@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Board } from '../models/board.model';
-import { useAppDispatch } from '../store';
 import { loadBoards } from '../store/actions/boardAction';
 
 export default function BoardApp() {
@@ -12,7 +11,6 @@ export default function BoardApp() {
     useEffect(() => {
         const setBoards = async () => {
             dispatch(loadBoards())
-            console.log(boards)
         }
         setBoards()
     }, [])
