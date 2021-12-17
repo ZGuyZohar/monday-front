@@ -1,41 +1,40 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { GroupList } from '../cmps/GroupList';
+import { useAppDispatch } from '../hooks/useAppDispatch';
+import { useAppSelector } from '../hooks/useAppSelector';
+import { useDidMountEffect } from '../hooks/useDidMountEffect';
 import { Board } from '../models/board.model';
-import { useAppDispatch } from '../store';
-import { loadBoards, setBoard } from '../store/actions/boardAction';
+import { loadBoards, setCurrBoard } from '../store/slices/board-slice';
 
-export default function BoardApp() {
+export function Workspace() {
     
-    const boards: Board[] = useSelector((state: any) => state.boardReducer.boards)
-    const currBoard: Board | null = useSelector((state: any) => state.boardReducer.currBoard)
+    const boards: Board[] = useAppSelector((state: any) => state.boardSlice.boards)
+    const currBoard: Board | null = useAppSelector((state: any) => state.boardSlice.currBoard)
     const dispatch = useAppDispatch()
     const { boardId } = useParams()
 
     useEffect(() => {
         const initWorkspace = async () => {
-            dispatch(loadBoards())
-            console.log(boards,' from init');
-            
-            // .then((boards)=>console.log(boards,'FROM THEN!'))
-            setCurrBoard()
+            const boardRes = await dispatch(loadBoards())
+            const { payload } = boardRes
+            setBoard(payload)
         }
         initWorkspace()
     }, [])
-    
-    useEffect(() => {
-        setCurrBoard()
+
+    useDidMountEffect(()=> {
+        setBoard()
     }, [boardId])
     
-    const setCurrBoard = () => {
+    const setBoard = (currBoards?: any  ) => {
         let id = boardId
-        if (!id) id = boards[0]._id
-        console.log(id);
-        dispatch(setBoard(id))
+        currBoards = (!currBoards.length || !currBoards) ? boards : currBoards
+        if (!id) id = currBoards[0]._id
+        dispatch(setCurrBoard(id))
     }
 
-    return (
+    return ( boards &&
         <section>
             <aside className="workspace-nav"></aside>
             {currBoard && <GroupList groups={currBoard.groups} />}

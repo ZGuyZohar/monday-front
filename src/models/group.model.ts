@@ -1,8 +1,8 @@
 import { Task } from "./task.model";
 
 export interface Group {
-    id: String,
-    title: String,
+    id: string,
+    title: string,
     tasks: Task[],
     style: Object
 }

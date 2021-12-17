@@ -1,14 +1,13 @@
 import { Group } from "../models/group.model"
+import { GroupApp } from "./GroupApp";
 
 export function GroupList({groups} : {groups: Group[]}) {
-    console.log(groups, 'groups are');
     
     return (
         <section>
-           { groups.map(group => {
-                return <li>{group.title}</li>
-            })
-        }
+            {
+                groups.map(group => <GroupApp key={group.id} group={group} />)
+            }
         </section>
     )
 }
