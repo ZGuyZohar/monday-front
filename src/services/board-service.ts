@@ -26,10 +26,15 @@ export const boardService = {
     getEmptyGroup
 }
 
-function query(filterBy = {}) {
+async function query(filterBy = {}) {
     // return httpService.get(BOARD_URL)
-    return storageService.query(BOARD_KEY)
-    // TODO GETBOARD IF NONE FOUND
+    let boards : Board[] = await storageService.query(BOARD_KEY)
+    if(!boards || !boards.length) {
+        const board = getMockBoard()
+        boards.unshift(board)
+        storageService.post(BOARD_KEY, getMockBoard())
+    }
+    return boards
 }
 
 function getById(id: string) {
@@ -154,3 +159,11 @@ function _makeId(length: Number = 5): String {
 }
 
 // function getColors() {}
+
+function getMockBoard() {
+    const board = getEmptyBoard()
+    board.groups = [getEmptyGroup()]
+    board.groups[0].tasks = [getEmptyTask()]
+    board.groups[0].title = 'popo' 
+    return board
+}

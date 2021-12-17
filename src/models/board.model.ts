@@ -3,13 +3,13 @@ import { MiniUser } from "./mini-user.model";
 import { Status } from "./status.model";
 
 export interface Board {
-    _id: String,
-    title: String,
+    _id: string,
+    title: string,
     createdAt: Date,
     createdBy: MiniUser | null,
     style: Object,
     statuses: Status[],
     members: MiniUser[],
     groups: Group[],
-    cmpsOrder: String[]
+    cmpsOrder: string[]
 }

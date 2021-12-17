@@ -1,10 +1,11 @@
 import { Board } from "../../models/board.model";
 
 const INITIAL_STATE = {
-    boards: []
+    boards: [],
+    currBoard: null
 }
 
-export function boardReducer(state = INITIAL_STATE, action: {type: string, board: Board, boards: Board[], boardId: string}) {
+export function boardReducer(state = INITIAL_STATE, action: any) {
 
     switch (action.type) {
         case 'SET_BOARDS':
@@ -27,6 +28,12 @@ export function boardReducer(state = INITIAL_STATE, action: {type: string, board
             return {
                 ...state,
                 boards: state.boards.filter((board: Board) => board._id !== action.boardId)
+            }
+        case 'SET_BOARD': 
+            const currBoard : Board = action.board 
+            return {
+                ...state,
+                currBoard
             }
         default:
             return state
