@@ -1,14 +1,14 @@
 import React from "react";
 import { GroupHeaderTitle } from "./GroupHeadersCmps/GroupHeaderTitle";
-import { HeadDatePicker } from "./GroupHeadersCmps/HeadDatePicker";
-import { HeadMemberPicker } from "./GroupHeadersCmps/HeadMemberPicker";
-import { HeadStatusPicker } from "./GroupHeadersCmps/HeadStatusPicker";
-const dynamicCmps : any = {HeadDatePicker, HeadMemberPicker, HeadStatusPicker}
+import { HeadDatePicker as DatePicker } from "./GroupHeadersCmps/HeadDatePicker";
+import { HeadMemberPicker as MemberPicker } from "./GroupHeadersCmps/HeadMemberPicker";
+import { HeadStatusPicker as StatusPicker } from "./GroupHeadersCmps/HeadStatusPicker";
+const dynamicCmps: any = { DatePicker, MemberPicker, StatusPicker}
 
 export function GroupHeader({cmpsOrder, title}: {cmpsOrder: string[] | undefined, title: string }) {
 
     const getDynamicCmp = (cmp: string) => {
-        const Cmp = dynamicCmps['Head' + cmp]
+        const Cmp = dynamicCmps[cmp]
         return <Cmp key={cmp} />
     }
 

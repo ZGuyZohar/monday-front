@@ -30,9 +30,9 @@ async function query(filterBy = {}) {
     // return httpService.get(BOARD_URL)
     let boards : Board[] = await storageService.query(BOARD_KEY)
     if(!boards || !boards.length) {
-        const board = getMockBoard()
+        let board = getMockBoard()
+        board = await storageService.post(BOARD_KEY, getMockBoard())
         boards.unshift(board)
-        storageService.post(BOARD_KEY, getMockBoard())
     }
     return boards
 }
@@ -62,7 +62,7 @@ function getEmptyBoard(): Board {
     return {
         _id: '',
         title: '',
-        createdAt: new Date(),
+        createdAt: Date.now(),
         createdBy: null,
         style: {},
         statuses: _getStatuses(),
@@ -103,7 +103,7 @@ function getEmptyComment(): Comment {
     return {
         id:'',
         txt: '',
-        createdAt: new Date(),
+        createdAt: Date.now(),
         byMember: null
     }
 }
@@ -151,7 +151,7 @@ function _getStatuses(): Status[] {
     ]
 }
 
-function _makeId(length: Number = 5): String {
+function _makeId(length: Number = 5): string {
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     for (var i = 0; i < length; i++) {
@@ -166,7 +166,12 @@ function getMockBoard() {
     const board = getEmptyBoard()
     board.title = 'My Board'
     board.groups = [getEmptyGroup()]
-    board.groups[0].tasks = [getEmptyTask()]
-    board.groups[0].title = 'popo' 
+    board.groups[0].id = 'g101'
+    board.groups[0].tasks = [getEmptyTask(), getEmptyTask()]
+    board.groups[0].tasks[0].id = 't101'
+    board.groups[0].tasks[1].id = 't102'
+    board.groups[0].tasks[0].title = 'Do this'
+    board.groups[0].tasks[1].title = 'Do that'
+    board.groups[0].title = 'My group' 
     return board
 }

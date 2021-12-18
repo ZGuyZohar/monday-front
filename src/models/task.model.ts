@@ -1,16 +1,16 @@
 import { Checklist } from "./checklist.model";
 
 export interface Task {
-    id: String,
-    title: String,
-    description: String,
+    id: string,
+    title: string,
+    description: string,
     comments: [],
     checklists: Checklist[],
     members: [],
     dueDate: null,
-    statusId: String,
+    statusId: string,
     style: {
-        bgColor: String
+        bgColor: string
     },
     groupId: string
 }

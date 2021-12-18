@@ -1,7 +1,7 @@
 import { Todo } from "./todo.model";
 
 export interface Checklist {
-    id: String,
-    title: String,
+    id: string,
+    title: string,
     todos: Todo[]
 }

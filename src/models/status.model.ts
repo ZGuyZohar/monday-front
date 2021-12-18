@@ -1,5 +1,5 @@
 export interface Status {
-    id: String,
-    status: String,
-    color: String
+    id: string,
+    status: string,
+    color: string
 }

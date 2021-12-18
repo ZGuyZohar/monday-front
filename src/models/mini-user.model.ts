@@ -1,5 +1,5 @@
 export interface MiniUser {
-    _id: String,
-    fullname: String,
-    imgUrl: String
+    _id: string,
+    fullname: string,
+    imgUrl: string
 }

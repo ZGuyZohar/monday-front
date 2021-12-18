@@ -1,8 +1,8 @@
 export interface User {
-    _id: String,
-    fullname: String,
-    username: String,
-    password: String,
-    imgUrl: String,
+    _id: string,
+    fullname: string,
+    username: string,
+    password: string,
+    imgUrl: string,
     mentions: []
 }

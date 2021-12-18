@@ -1,6 +1,6 @@
 export interface Comment {
-    id: String,
-    txt: String,
-    createdAt: Date,
+    id: string,
+    txt: string,
+    createdAt: number,
     byMember: Object | null
 }

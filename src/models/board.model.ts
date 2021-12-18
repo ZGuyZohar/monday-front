@@ -5,7 +5,7 @@ import { Status } from "./status.model";
 export interface Board {
     _id: string,
     title: string,
-    createdAt: Date,
+    createdAt: number,
     createdBy: MiniUser | null,
     style: Object,
     statuses: Status[],

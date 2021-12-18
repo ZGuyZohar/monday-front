@@ -42,18 +42,11 @@ export function Workspace() {
     return ( boards &&
         <section className="workspace flex grow">
             <WorkspaceNav miniBoards={miniBoards}  />
-            {currBoard && <GroupList groups={currBoard.groups} />}
+            <div className="group-container flex flex-col grow">
+                {/* BOARD HEADER WILL BE HERE */}
+                {currBoard && <GroupList groups={currBoard.groups} />}
+            </div>
 
-            {/* <section className="main-layout">
-                <div className="task-main">
-                    <TaskTitleHeader />>
-                    tasks.map(task => <TaskPreviewTitle />)
-                </div>
-                <div className="task-cmps">
-                   cmpOrder.map(cmp => <DynamicCmpHeader/>)
-                   tasks.map(task => <TaskPreview/>) 
-                </div>
-            </section> */}
         </section>
     )
 }

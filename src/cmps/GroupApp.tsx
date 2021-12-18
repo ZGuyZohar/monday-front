@@ -11,16 +11,7 @@ export function GroupApp({group} : {group: Group}) {
     return (
         <article className="group-app m-10 flex flex-col">
             <GroupHeader cmpsOrder={cmpsOrder} title={group.title} />
-            {/* {group.tasks.map(task => <TaskPreview/>)} */}
+            {group.tasks.map(task => <TaskPreview task={task} key={task.id} cmpsOrder={cmpsOrder} />)}
         </article>
     )
 }
-
-{/* <div className="task-main">
-    <TaskTitleHeader />>
-        tasks.map(task => <TaskPreviewTitle />)
-</div>
-<div className="task-cmps">
-       cmpOrder.map(cmp => <DynamicCmpHeader />)
-       tasks.map(task => <TaskPreview />)
-</div> */}
