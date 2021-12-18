@@ -1,4 +1,4 @@
-import { httpService } from './http-service.js'
+// import { httpService } from './http-service.js'
 
 import { Board } from '../models/board.model.js'
 import { Checklist } from '../models/checklist.model.js'
@@ -8,9 +8,10 @@ import { Status } from '../models/status.model.js'
 import { Task } from '../models/task.model.js'
 import { Todo } from '../models/todo.model.js'
 import { storageService } from './async-storage-service'
+import { DynamicCmp } from '../models/cmp.model.js'
 
 
-const BOARD_URL = '/board/'
+// const BOARD_URL = '/board/'
 const BOARD_KEY = 'boardDb'
 export const boardService = {
     query,
@@ -18,18 +19,18 @@ export const boardService = {
     remove,
     save,
     getEmptyBoard,
-    getEmptyTodo, 
-    getEmptyStatus, 
-    getEmptyCheckList, 
-    getEmptyComment, 
-    getEmptyTask, 
+    getEmptyTodo,
+    getEmptyStatus,
+    getEmptyCheckList,
+    getEmptyComment,
+    getEmptyTask,
     getEmptyGroup
 }
 
 async function query(filterBy = {}) {
     // return httpService.get(BOARD_URL)
-    let boards : Board[] = await storageService.query(BOARD_KEY)
-    if(!boards || !boards.length) {
+    let boards: Board[] = await storageService.query(BOARD_KEY)
+    if (!boards || !boards.length) {
         let board = getMockBoard()
         board = await storageService.post(BOARD_KEY, getMockBoard())
         boards.unshift(board)
@@ -65,10 +66,42 @@ function getEmptyBoard(): Board {
         createdAt: Date.now(),
         createdBy: null,
         style: {},
-        statuses: _getStatuses(),
         members: [],
         groups: [],
-        cmpsOrder: ['StatusPicker', 'MemberPicker', 'DatePicker']
+        cmpsOrder: [
+            {
+                id: _makeId(),
+                type: 'StatusPicker',
+                info: {
+                    statuses: _getStatuses()
+                },
+                styles: {
+                    width: 130,
+                    maxWidth: 250
+                }
+            },
+            {
+                id: _makeId(),
+                type: 'MemberPicker',
+                info: {
+                    
+                },
+                styles: {
+                    width: 130,
+                    maxWidth: 250
+
+                }
+            },
+            {
+                id: _makeId(),
+                type: 'DatePicker',
+                info: {},
+                styles: {
+                    width: 130,
+                    maxWidth: 250
+                }
+            }
+        ]
     }
 }
 
@@ -101,7 +134,7 @@ function getEmptyTask(): Task {
 
 function getEmptyComment(): Comment {
     return {
-        id:'',
+        id: '',
         txt: '',
         createdAt: Date.now(),
         byMember: null
@@ -148,7 +181,21 @@ function _getStatuses(): Status[] {
             status: 'Stuck',
             color: '#e2445c'
         },
+        {
+            id: _makeId(),
+            status: '',
+            color: '#c4c4c4'
+        },
     ]
+}
+
+function getEmptyCmp(): DynamicCmp {
+    return {
+        id: _makeId(),
+        type: '',
+        info: {},
+        styles: {}
+    }
 }
 
 function _makeId(length: Number = 5): string {
@@ -172,6 +219,6 @@ function getMockBoard() {
     board.groups[0].tasks[1].id = 't102'
     board.groups[0].tasks[0].title = 'Do this'
     board.groups[0].tasks[1].title = 'Do that'
-    board.groups[0].title = 'My group' 
+    board.groups[0].title = 'My group'
     return board
 }

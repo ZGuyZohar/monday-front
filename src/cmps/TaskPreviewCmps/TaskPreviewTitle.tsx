@@ -1,7 +1,7 @@
 
 export function TaskPreviewTitle({title} : { title: string }) {
     return (
-        <div className="main mr-2">
+        <div className="main ">
             {title}
         </div>
     )
