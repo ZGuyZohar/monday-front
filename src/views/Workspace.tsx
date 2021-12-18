@@ -40,7 +40,7 @@ export function Workspace() {
     }
     
     return ( boards &&
-        <section className="grow-1">
+        <section className="workspace flex grow">
             <WorkspaceNav miniBoards={miniBoards}  />
             {currBoard && <GroupList groups={currBoard.groups} />}
 

@@ -9,7 +9,7 @@ export function GroupApp({group} : {group: Group}) {
     //*NOTE - changing cmpsorder happens here or in workspace
     
     return (
-        <article className="group-app m-10">
+        <article className="group-app m-10 flex flex-col">
             <GroupHeader cmpsOrder={cmpsOrder} title={group.title} />
             {/* {group.tasks.map(task => <TaskPreview/>)} */}
         </article>

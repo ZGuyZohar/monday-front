@@ -13,7 +13,7 @@ export function GroupHeader({cmpsOrder, title}: {cmpsOrder: string[] | undefined
     }
 
     return (
-        <section className="group-header main">
+        <section className="group-header flex">
           <GroupHeaderTitle title={title} />
           {cmpsOrder && cmpsOrder.map(cmp => getDynamicCmp(cmp))}
         </section>

@@ -1,7 +1,7 @@
 
 export function HeadMemberPicker() {
     return (
-        <div>
+        <div className="mx-2">
             Member Picker
         </div>
     )

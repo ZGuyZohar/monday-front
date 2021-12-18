@@ -1,7 +1,7 @@
 
 export function HeadStatusPicker() {
     return (
-        <div>
+        <div className="mx-2">
             Status Picker
         </div>
     )
