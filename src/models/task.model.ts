@@ -11,5 +11,6 @@ export interface Task {
     statusId: String,
     style: {
         bgColor: String
-    }
+    },
+    groupId: string
 }

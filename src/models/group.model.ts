@@ -4,5 +4,6 @@ export interface Group {
     id: string,
     title: string,
     tasks: Task[],
-    style: Object
+    style: Object,
+    boardId: string
 }

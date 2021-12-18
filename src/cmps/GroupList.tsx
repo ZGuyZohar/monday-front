@@ -4,7 +4,7 @@ import { GroupApp } from "./GroupApp";
 export function GroupList({groups} : {groups: Group[]}) {
     
     return (
-        <section>
+        <section className="group-list">
             {
                 groups.map(group => <GroupApp key={group.id} group={group} />)
             }

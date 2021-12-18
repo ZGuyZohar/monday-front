@@ -68,7 +68,7 @@ function getEmptyBoard(): Board {
         statuses: _getStatuses(),
         members: [],
         groups: [],
-        cmpsOrder: ['status-picker', 'member-picker', 'date-picker']
+        cmpsOrder: ['StatusPicker', 'MemberPicker', 'DatePicker']
     }
 }
 
@@ -77,7 +77,8 @@ function getEmptyGroup(): Group {
         id: '',
         title: '',
         tasks: [],
-        style: {}
+        style: {},
+        boardId: ''
     }
 }
 
@@ -93,7 +94,8 @@ function getEmptyTask(): Task {
         statusId: '',
         style: {
             bgColor: ''
-        }
+        },
+        groupId: ''
     }
 }
 
@@ -162,6 +164,7 @@ function _makeId(length: Number = 5): String {
 
 function getMockBoard() {
     const board = getEmptyBoard()
+    board.title = 'My Board'
     board.groups = [getEmptyGroup()]
     board.groups[0].tasks = [getEmptyTask()]
     board.groups[0].title = 'popo' 

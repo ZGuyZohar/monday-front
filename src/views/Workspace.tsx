@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { GroupList } from '../cmps/GroupList';
+import { WorkspaceNav } from '../cmps/WorkspaceNav';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { useDidMountEffect } from '../hooks/useDidMountEffect';
 import { Board } from '../models/board.model';
+import { MiniBoard } from '../models/mini-board.model';
 import { loadBoards, setCurrBoard } from '../store/slices/board-slice';
 
 export function Workspace() {
@@ -13,7 +15,12 @@ export function Workspace() {
     const currBoard: Board | null = useAppSelector((state: any) => state.boardSlice.currBoard)
     const dispatch = useAppDispatch()
     const { boardId } = useParams()
+    const navigate = useNavigate()
 
+    const miniBoards : MiniBoard[] = useMemo(() => {
+        return boards.map(board => ({boardId: board._id, title: board.title}))
+    }, [boards?.length])
+    
     useEffect(() => {
         const initWorkspace = async () => {
             const boardRes = await dispatch(loadBoards())
@@ -23,20 +30,18 @@ export function Workspace() {
         initWorkspace()
     }, [])
 
-    useDidMountEffect(()=> {
-        setBoard()
+    useEffect(()=> {
+        dispatch(setCurrBoard(boardId))
     }, [boardId])
     
-    const setBoard = (currBoards?: any  ) => {
-        let id = boardId
-        currBoards = (!currBoards.length || !currBoards) ? boards : currBoards
-        if (!id) id = currBoards[0]._id
-        dispatch(setCurrBoard(id))
+    const setBoard = (currBoards?: Board[] | any  ) => {
+        currBoards = (!currBoards?.length || !currBoards) ? boards : currBoards
+        if (!boardId) navigate('../board/' + currBoards[0]._id)
     }
-
+    
     return ( boards &&
-        <section>
-            <aside className="workspace-nav"></aside>
+        <section className="grow-1">
+            <WorkspaceNav miniBoards={miniBoards}  />
             {currBoard && <GroupList groups={currBoard.groups} />}
 
             {/* <section className="main-layout">
