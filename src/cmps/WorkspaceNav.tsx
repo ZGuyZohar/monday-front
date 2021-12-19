@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import { MiniBoard } from "../models/mini-board.model";
-export function WorkspaceNav({miniBoards} : {miniBoards: MiniBoard[]}) {
-    
+export function WorkspaceNav({ miniBoards }: { miniBoards: MiniBoard[] }) {
+    console.log(miniBoards);
+
     return (
         <aside className="workspace-nav">
             <ul className="board-list">

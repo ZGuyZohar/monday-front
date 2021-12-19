@@ -24,7 +24,8 @@ export const boardService = {
     getEmptyCheckList,
     getEmptyComment,
     getEmptyTask,
-    getEmptyGroup
+    getEmptyGroup,
+    saveTask
 }
 
 async function query(filterBy = {}) {
@@ -84,7 +85,7 @@ function getEmptyBoard(): Board {
                 id: _makeId(),
                 type: 'MemberPicker',
                 info: {
-                    
+
                 },
                 styles: {
                     width: 130,
@@ -128,7 +129,8 @@ function getEmptyTask(): Task {
         style: {
             bgColor: ''
         },
-        groupId: ''
+        groupId: '',
+        boardId: ''
     }
 }
 
@@ -216,9 +218,38 @@ function getMockBoard() {
     board.groups[0].id = 'g101'
     board.groups[0].tasks = [getEmptyTask(), getEmptyTask()]
     board.groups[0].tasks[0].id = 't101'
+    board.groups[0].tasks[0].boardId = board._id
+    board.groups[0].tasks[0].groupId = board.groups[0].id
     board.groups[0].tasks[1].id = 't102'
+    board.groups[0].tasks[1].boardId = board._id
+    board.groups[0].tasks[0].groupId = board.groups[0].id
     board.groups[0].tasks[0].title = 'Do this'
     board.groups[0].tasks[1].title = 'Do that'
     board.groups[0].title = 'My group'
     return board
+}
+
+async function saveTask(task: Task) {
+    const boards = await query()
+    const { groupId, boardId, id } = task
+    console.log(groupId, boardId, id, boards);
+
+    const boardIdx = boards.findIndex(board => board._id === boardId)
+    const groupIdx = boards[boardIdx].groups.findIndex(group => group.id === groupId)
+    const currBoard = boards[boardIdx]
+    const tasks = boards[boardIdx].groups[groupIdx].tasks
+    if (task.id) {
+        const taskIdx = tasks.findIndex(task => task.id === id)
+        tasks.splice(taskIdx, 1, task)
+        // return httpService.put(BOARD_URL + board._id, board)
+        // return task
+    } else {
+        task.id = _makeId()
+        tasks.push(task)
+        // return httpService.post(BOARD_URL, board)
+        // storageService.post(BOARD_KEY, boards)
+    }
+    console.log('saving currBoard:', currBoard);
+    storageService.put(BOARD_KEY, currBoard)
+    return task
 }

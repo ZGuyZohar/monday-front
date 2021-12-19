@@ -8,19 +8,23 @@ import { useDidMountEffect } from '../hooks/useDidMountEffect';
 import { Board } from '../models/board.model';
 import { MiniBoard } from '../models/mini-board.model';
 import { loadBoards, setCurrBoard } from '../store/slices/board-slice';
+import { AddBoardEntity } from '../cmps/AddBoardEntity';
 
 export function Workspace() {
-    
+
     const boards: Board[] = useAppSelector((state: any) => state.boardSlice.boards)
     const currBoard: Board | null = useAppSelector((state: any) => state.boardSlice.currBoard)
     const dispatch = useAppDispatch()
     const { boardId } = useParams()
     const navigate = useNavigate()
 
-    const miniBoards : MiniBoard[] = useMemo(() => {
-        return boards.map(board => ({boardId: board._id, title: board.title}))
+    const miniBoards: MiniBoard[] = useMemo(() => {
+        return boards.map(board => {
+            console.log(board);
+            return ({ boardId: board._id, title: board.title })
+        })
     }, [boards?.length])
-    
+
     useEffect(() => {
         const initWorkspace = async () => {
             const boardRes = await dispatch(loadBoards())
@@ -30,21 +34,27 @@ export function Workspace() {
         initWorkspace()
     }, [])
 
-    useEffect(()=> {
+    useEffect(() => {
         dispatch(setCurrBoard(boardId))
     }, [boardId])
-    
-    const setBoard = (currBoards?: Board[] | any  ) => {
+
+    const setBoard = (currBoards?: Board[] | any) => {
         currBoards = (!currBoards?.length || !currBoards) ? boards : currBoards
-        if (!boardId) navigate('../board/' + currBoards[0]._id)
+        console.log('currBoards', currBoards);
+
+        if (!boardId) {
+            console.log('currBoards[0]._id', currBoards);
+            navigate('../board/' + currBoards[0]._id)
+        }
     }
-    
-    return ( boards &&
+
+    return (boards &&
         <section className="workspace flex grow">
-            <WorkspaceNav miniBoards={miniBoards}  />
+            {miniBoards && <WorkspaceNav miniBoards={miniBoards} />}
             <div className="group-container flex flex-col grow">
+                <AddBoardEntity />
                 {/* BOARD HEADER WILL BE HERE */}
-                {currBoard && <GroupList groups={currBoard.groups} />}
+                {currBoard && <GroupList boardId={currBoard._id} groups={currBoard.groups} />}
             </div>
 
         </section>

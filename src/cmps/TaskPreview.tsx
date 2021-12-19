@@ -27,7 +27,7 @@ export function TaskPreview({ task, cmpsOrder }: { task: Task, cmpsOrder: Dynami
     }
 
     return (
-        <article className="flex">
+        <article className="flex task-preview">
             <TaskPreviewTitle title={task.title} />
             {cmpsOrder && cmpsOrder.map((cmp) => getDynamicCmp(cmp))}
         </article>
