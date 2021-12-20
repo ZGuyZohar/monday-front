@@ -3,6 +3,7 @@ import { Board } from '../../models/board.model'
 import { boardService } from '../../services/board-service'
 import type { RootState } from '..'
 import { Task } from '../../models/task.model'
+import { Group } from '../../models/group.model'
 
 export interface BoardState {
     boards: Board[],
@@ -54,6 +55,14 @@ export const saveTask = createAsyncThunk(
     }
 )
 
+export const saveGroup = createAsyncThunk(
+    'SAVE_GROUP',
+    async (group: Group) => {
+        const savedGroup = await boardService.saveGroup(group);
+        return savedGroup
+    }
+)
+
 
 export const boardSlice = createSlice({
     name: 'boards',
@@ -90,15 +99,22 @@ export const boardSlice = createSlice({
             state.boards.splice(foundIdx, 1)
         })
         builder.addCase(saveTask.fulfilled, (state, action) => {
-            console.log(state.currBoard?._id);
+            const { currBoard } = state
             const task = action.payload
-            let { groupId, boardId, id } = task
-            // if (!boardId) boardId = state.currBoard?._id
-            // const boardIdx = state.boards.findIndex(board => board._id === boardId)
-            const groupIdx: any = state.currBoard?.groups.findIndex(group => group.id === groupId)
-            const taskIdx: any = state.currBoard?.groups[groupIdx].tasks.findIndex(task => task.id === id)
-            if (taskIdx === -1) state.currBoard?.groups[groupIdx].tasks.push(task)
-            else state.currBoard?.groups[groupIdx].tasks.splice(taskIdx, 1, task)
+            const { groupId, id } = task
+            const groupIdx: any = currBoard?.groups.findIndex(group => group.id === groupId)
+            const taskIdx: any = currBoard?.groups[groupIdx].tasks.findIndex(task => task.id === id)
+            if (taskIdx === -1) currBoard?.groups[groupIdx].tasks.push(task)
+            else currBoard?.groups[groupIdx].tasks.splice(taskIdx, 1, task)
+        })
+        builder.addCase(saveGroup.fulfilled, (state, action) => {
+            const { currBoard } = state
+            const group = action.payload
+            const { id } = action.payload
+            const groupIdx: any = currBoard?.groups.findIndex(group => (
+                group.id === id
+            ))
+            if (groupIdx !== -1) currBoard?.groups.splice(groupIdx, 1, group)
         })
     },
 })

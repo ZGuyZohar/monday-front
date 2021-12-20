@@ -6,7 +6,7 @@ import { TaskPreview } from "./TaskPreview";
 import { TaskCompose } from "./TaskCompose";
 import { Task } from "../models/task.model";
 import { useAppDispatch } from "../hooks/useAppDispatch";
-import { saveTask } from "../store/slices/board-slice";
+import { saveGroup, saveTask } from "../store/slices/board-slice";
 
 export function GroupApp({ group, boardId }: { group: Group, boardId: string }) {
     const dispatch = useAppDispatch()
@@ -18,9 +18,16 @@ export function GroupApp({ group, boardId }: { group: Group, boardId: string }) 
         if (!task.boardId) task.boardId = boardId
         dispatch(saveTask(task))
     }
+
+    const groupTitleUpdated = (title: string): void => {
+        console.log('groupTitleUpdated, title:', title);
+        const groupToSave = { ...group, title }
+        dispatch(saveGroup(groupToSave))
+
+    }
     return (
         <article className="group-app my-10 flex flex-col">
-            <GroupHeader cmpsOrder={cmpsOrder} title={group.title} />
+            <GroupHeader groupTitleUpdated={groupTitleUpdated} cmpsOrder={cmpsOrder} title={group.title} />
             {group.tasks.map(task => <TaskPreview task={task} key={task.id} cmpsOrder={cmpsOrder} />)}
             <TaskCompose addTask={addTask} />
         </article>

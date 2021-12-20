@@ -25,7 +25,8 @@ export const boardService = {
     getEmptyComment,
     getEmptyTask,
     getEmptyGroup,
-    saveTask
+    saveTask,
+    saveGroup
 }
 
 async function query(filterBy = {}) {
@@ -252,4 +253,21 @@ async function saveTask(task: Task) {
     console.log('saving currBoard:', currBoard);
     storageService.put(BOARD_KEY, currBoard)
     return task
+}
+
+async function saveGroup(group: Group) {
+    let groupIdx = -1
+    const boards = await query()
+    const { id } = group
+    const boardIdx = boards.findIndex(board => {
+        groupIdx = board.groups.findIndex(group => (
+            group.id === id
+        ))
+        if (groupIdx === -1) return false
+        else return true
+    })
+    const currBoard = boards[boardIdx]
+    currBoard.groups.splice(groupIdx, 1, group)
+    storageService.put(BOARD_KEY, currBoard)
+    return group
 }
