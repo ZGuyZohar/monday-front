@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { GroupList } from '../cmps/GroupList';
+import { TaskEdit } from '../cmps/TaskEdit';
 import { WorkspaceNav } from '../cmps/WorkspaceNav';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
 import { useDidMountEffect } from '../hooks/useDidMountEffect';
 import { Board } from '../models/board.model';
+import { DynamicCmp } from '../models/cmp.model';
 import { MiniBoard } from '../models/mini-board.model';
 import { loadBoards, setCurrBoard, addGroup } from '../store/slices/board-slice';
 import { AddBoardEntity } from '../cmps/AddBoardEntity';
@@ -19,6 +21,7 @@ export function Workspace() {
     const dispatch = useAppDispatch()
     const { boardId } = useParams()
     const navigate = useNavigate()
+    const [editInfo, setEditInfo] = useState<DynamicCmp | null>(null)
 
     const miniBoards: MiniBoard[] = useMemo(() => {
         return boards.map(board => {
@@ -54,13 +57,20 @@ export function Workspace() {
         dispatch(addGroup(boardId))
     }
 
+    const sendEditInfo = (editInfo: any) => {
+        console.log(editInfo, 'editinfo');
+
+        setEditInfo(editInfo)
+    }
+
     return (boards &&
         <section className="workspace flex grow">
             {miniBoards && <WorkspaceNav miniBoards={miniBoards} />}
             <div className="group-container flex flex-col grow">
                 <AddBoardEntity onAddGroup={onAddGroup} />
                 {/* BOARD HEADER WILL BE HERE */}
-                {currBoard && <GroupList boardId={currBoard._id} groups={currBoard.groups} />}
+                {currBoard && <GroupList sendEditInfo={sendEditInfo} boardId={currBoard._id} groups={currBoard.groups} />}
+                {editInfo && <TaskEdit editInfo={editInfo} />}
             </div>
 
         </section>

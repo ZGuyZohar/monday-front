@@ -8,7 +8,7 @@ import { Task } from "../models/task.model";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { saveGroup, saveTask } from "../store/slices/board-slice";
 
-export function GroupApp({ group, boardId }: { group: Group, boardId: string }) {
+export function GroupApp({ group, sendEditInfo, boardId }: { group: Group, sendEditInfo: any, boardId: string}) {
     const dispatch = useAppDispatch()
     const cmpsOrder: DynamicCmp[] | undefined = useAppSelector(state => state.boardSlice.currBoard?.cmpsOrder)
 
@@ -26,9 +26,9 @@ export function GroupApp({ group, boardId }: { group: Group, boardId: string }) 
     }
 
     return (
-        <article className="group-app my-10 flex flex-col">
+        <article className="group-app my-10 pr-7 flex flex-col">
             <GroupHeader groupTitleUpdated={groupTitleUpdated} cmpsOrder={cmpsOrder} title={group.title} />
-            {group.tasks.map(task => <TaskPreview task={task} key={task.id} cmpsOrder={cmpsOrder} />)}
+            {group.tasks.map(task => <TaskPreview task={task} key={task.id} cmpsOrder={cmpsOrder} sendEditInfo={sendEditInfo}/>)}
             <TaskCompose addTask={addTask} />
         </article>
     )

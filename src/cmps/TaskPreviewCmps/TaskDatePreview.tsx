@@ -1,8 +1,31 @@
+import { useRef } from "react";
 
-export function TaskDatePreview({ payload }: { payload: any }) {
+export function TaskDatePreview({ payload, sendEditInfo }: { payload: any, sendEditInfo: any }) {
+    
+    const elCmp = useRef<any>(null);
+    const setEditInfo = (): void => {
+        const { cmp } = payload
+        const modalPos = {
+            left: elCmp.current.offsetLeft + (elCmp.current.offsetWidth / 2),
+            top: elCmp.current.offsetTop + 20
+        }
+
+        const cmpToSend = {
+            id: cmp.id,
+            info: cmp.info,
+            type: cmp.type
+        }
+
+        const editInfo = {
+            pos: modalPos,
+            cmp: cmpToSend
+        }
+        sendEditInfo(editInfo)
+    }
+
 
     return (
-        <div style={{ width: `${payload.cmp.styles.width || 130 }px` }} className="mx-2 px-2 dynamic-preview" >
+        <div ref={elCmp} onClick={() => setEditInfo()} style={{ width: `${payload.cmp.styles.width || 130 }px` }} className="mx-2 px-2 dynamic-preview" >
             date preview
         </div>
     )

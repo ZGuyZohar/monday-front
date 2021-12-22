@@ -1,6 +1,7 @@
+export type CmpTypes = 'StatusPicker' | 'MemberPicker' | 'DatePicker' 
 export interface DynamicCmp {
     id: string,
-    type: string,
-    info: object,
+    type: CmpTypes,
+    info: any,
     styles: object
 }

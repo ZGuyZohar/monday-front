@@ -25,6 +25,7 @@ export const boardService = {
     getEmptyComment,
     getEmptyTask,
     getEmptyGroup,
+    getEmptyCmp,
     saveTask,
     saveGroup,
     addGroup
@@ -125,9 +126,9 @@ function getEmptyTask(): Task {
         description: '',
         comments: [],
         checklists: [],
-        members: [],
+        cmpMembersMap: {},
         dueDate: null,
-        statusId: '',
+        cmpStatusMap: {},
         style: {
             bgColor: ''
         },
@@ -195,8 +196,8 @@ function _getStatuses(): Status[] {
 
 function getEmptyCmp(): DynamicCmp {
     return {
-        id: _makeId(),
-        type: '',
+        id: '',
+        type: 'StatusPicker',
         info: {},
         styles: {}
     }
@@ -227,6 +228,8 @@ function getMockBoard() {
     board.groups[0].tasks[0].groupId = board.groups[0].id
     board.groups[0].tasks[0].title = 'Do this'
     board.groups[0].tasks[1].title = 'Do that'
+    board.groups[0].tasks[1].cmpStatusMap[board.cmpsOrder[0].id] = board.cmpsOrder[0].info.statuses[0].id
+    board.groups[0].tasks[0].cmpStatusMap[board.cmpsOrder[0].id] = board.cmpsOrder[0].info.statuses[1].id
     board.groups[0].title = 'My group'
     return board
 }

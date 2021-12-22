@@ -6,9 +6,9 @@ export interface Task {
     description: string,
     comments: [],
     checklists: Checklist[],
-    members: [],
-    dueDate: null,
-    statusId: string,
+    cmpMembersMap: Record<string, []>,
+    dueDate: number | null,
+    cmpStatusMap: Record<string, string>,
     style: {
         bgColor: string
     },
