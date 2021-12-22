@@ -7,8 +7,10 @@ import { useAppSelector } from '../hooks/useAppSelector';
 import { useDidMountEffect } from '../hooks/useDidMountEffect';
 import { Board } from '../models/board.model';
 import { MiniBoard } from '../models/mini-board.model';
-import { loadBoards, setCurrBoard } from '../store/slices/board-slice';
+import { loadBoards, setCurrBoard, addGroup } from '../store/slices/board-slice';
 import { AddBoardEntity } from '../cmps/AddBoardEntity';
+import { AnyAction } from 'redux';
+import { ThunkAction } from 'redux-thunk';
 
 export function Workspace() {
 
@@ -48,11 +50,15 @@ export function Workspace() {
         }
     }
 
+    const onAddGroup = (): any => {
+        dispatch(addGroup(boardId))
+    }
+
     return (boards &&
         <section className="workspace flex grow">
             {miniBoards && <WorkspaceNav miniBoards={miniBoards} />}
             <div className="group-container flex flex-col grow">
-                <AddBoardEntity />
+                <AddBoardEntity onAddGroup={onAddGroup} />
                 {/* BOARD HEADER WILL BE HERE */}
                 {currBoard && <GroupList boardId={currBoard._id} groups={currBoard.groups} />}
             </div>

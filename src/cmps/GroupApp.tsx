@@ -23,8 +23,8 @@ export function GroupApp({ group, boardId }: { group: Group, boardId: string }) 
         console.log('groupTitleUpdated, title:', title);
         const groupToSave = { ...group, title }
         dispatch(saveGroup(groupToSave))
-
     }
+
     return (
         <article className="group-app my-10 flex flex-col">
             <GroupHeader groupTitleUpdated={groupTitleUpdated} cmpsOrder={cmpsOrder} title={group.title} />

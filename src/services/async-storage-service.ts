@@ -9,13 +9,13 @@ export const storageService = {
     remove,
     postMany
 }
-
-function query(entityType: string) {
+// **PLASTER
+function query(entityType: string | any ) {
     var entities = JSON.parse(localStorage.getItem(entityType) || 'null') || []
     return Promise.resolve(entities);
 }
 
-function get(entityType: string, entityId: string) {
+function get(entityType: string | undefined , entityId: string | undefined) {
     return query(entityType)
         .then(entities => entities.find((entity: { _id: string; }) => entity._id === entityId))
 }

@@ -63,6 +63,15 @@ export const saveGroup = createAsyncThunk(
     }
 )
 
+export const addGroup = createAsyncThunk(
+    'INSERT_GROUP',
+    async (boardId: string | undefined) => {
+        // const boardId = "123"
+        const addedGroup = await boardService.addGroup(boardId);
+        return addedGroup
+    }
+)
+
 
 export const boardSlice = createSlice({
     name: 'boards',
@@ -115,6 +124,10 @@ export const boardSlice = createSlice({
                 group.id === id
             ))
             if (groupIdx !== -1) currBoard?.groups.splice(groupIdx, 1, group)
+        })
+        builder.addCase(addGroup.fulfilled, (state, action) => {
+            const addedGroup = action.payload
+            state.currBoard?.groups.unshift(addedGroup)
         })
     },
 })

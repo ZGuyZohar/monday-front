@@ -1,6 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit'
 import boardSlice from './slices/board-slice'
 
+import 'element-theme-default';
+
 export const store = configureStore({
     reducer: {
         boardSlice
