@@ -1,7 +1,7 @@
 import { Checklist } from "./checklist.model";
 
 export interface Task {
-    id: string,
+    id?: string,
     title: string,
     description: string,
     comments: [],
@@ -12,5 +12,6 @@ export interface Task {
     style: {
         bgColor: string
     },
-    groupId: string
+    groupId: string | null,
+    boardId: string | undefined,
 }

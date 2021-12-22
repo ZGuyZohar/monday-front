@@ -25,7 +25,9 @@ export const boardService = {
     getEmptyComment,
     getEmptyTask,
     getEmptyGroup,
-    getEmptyCmp
+    getEmptyCmp,
+    saveTask,
+    saveGroup
 }
 
 async function query(filterBy = {}) {
@@ -85,7 +87,7 @@ function getEmptyBoard(): Board {
                 id: _makeId(),
                 type: 'MemberPicker',
                 info: {
-                    
+
                 },
                 styles: {
                     width: 130,
@@ -129,7 +131,8 @@ function getEmptyTask(): Task {
         style: {
             bgColor: ''
         },
-        groupId: ''
+        groupId: '',
+        boardId: ''
     }
 }
 
@@ -217,11 +220,57 @@ function getMockBoard() {
     board.groups[0].id = 'g101'
     board.groups[0].tasks = [getEmptyTask(), getEmptyTask()]
     board.groups[0].tasks[0].id = 't101'
+    board.groups[0].tasks[0].boardId = board._id
+    board.groups[0].tasks[0].groupId = board.groups[0].id
     board.groups[0].tasks[1].id = 't102'
+    board.groups[0].tasks[1].boardId = board._id
+    board.groups[0].tasks[0].groupId = board.groups[0].id
     board.groups[0].tasks[0].title = 'Do this'
     board.groups[0].tasks[1].title = 'Do that'
     board.groups[0].tasks[1].cmpStatusMap[board.cmpsOrder[0].id] = board.cmpsOrder[0].info.statuses[0].id
     board.groups[0].tasks[0].cmpStatusMap[board.cmpsOrder[0].id] = board.cmpsOrder[0].info.statuses[1].id
     board.groups[0].title = 'My group'
     return board
+}
+
+async function saveTask(task: Task) {
+    const boards = await query()
+    const { groupId, boardId, id } = task
+    console.log(groupId, boardId, id, boards);
+
+    const boardIdx = boards.findIndex(board => board._id === boardId)
+    const groupIdx = boards[boardIdx].groups.findIndex(group => group.id === groupId)
+    const currBoard = boards[boardIdx]
+    const tasks = boards[boardIdx].groups[groupIdx].tasks
+    if (task.id) {
+        const taskIdx = tasks.findIndex(task => task.id === id)
+        tasks.splice(taskIdx, 1, task)
+        // return httpService.put(BOARD_URL + board._id, board)
+        // return task
+    } else {
+        task.id = _makeId()
+        tasks.push(task)
+        // return httpService.post(BOARD_URL, board)
+        // storageService.post(BOARD_KEY, boards)
+    }
+    console.log('saving currBoard:', currBoard);
+    storageService.put(BOARD_KEY, currBoard)
+    return task
+}
+
+async function saveGroup(group: Group) {
+    let groupIdx = -1
+    const boards = await query()
+    const { id } = group
+    const boardIdx = boards.findIndex(board => {
+        groupIdx = board.groups.findIndex(group => (
+            group.id === id
+        ))
+        if (groupIdx === -1) return false
+        else return true
+    })
+    const currBoard = boards[boardIdx]
+    currBoard.groups.splice(groupIdx, 1, group)
+    storageService.put(BOARD_KEY, currBoard)
+    return group
 }

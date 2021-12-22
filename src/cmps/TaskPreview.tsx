@@ -35,7 +35,7 @@ export function TaskPreview({ task, cmpsOrder, sendEditInfo }: { task: Task, cmp
     }
 
     return (
-        <article className="flex">
+        <article className="flex task-preview">
             <TaskPreviewTitle title={task.title} />
             {cmpsOrder && cmpsOrder.map((cmp) => getDynamicCmp(cmp))}
         </article>
