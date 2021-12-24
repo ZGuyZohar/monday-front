@@ -3,6 +3,7 @@ import { useRef } from "react"
 export function TaskMemberPreview({ payload, sendEditInfo }: { payload: any, sendEditInfo: any }) {
 
     const elCmp = useRef<any>(null);
+    
     const setEditInfo = (): void => {
         const { cmp } = payload
         const modalPos = {

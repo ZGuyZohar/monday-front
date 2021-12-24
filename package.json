@@ -14,8 +14,6 @@
     "@types/react-redux": "^7.1.20",
     "axios": "^0.24.0",
     "babel": "^6.23.0",
-    "element-react": "^1.4.34",
-    "element-theme-default": "^1.4.13",
     "node-sass": "^7.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
