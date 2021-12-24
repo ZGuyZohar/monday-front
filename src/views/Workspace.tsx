@@ -9,10 +9,11 @@ import { useDidMountEffect } from '../hooks/useDidMountEffect';
 import { Board } from '../models/board.model';
 import { DynamicCmp } from '../models/cmp.model';
 import { MiniBoard } from '../models/mini-board.model';
-import { loadBoards, setCurrBoard, addGroup } from '../store/slices/board-slice';
+import { loadBoards, setCurrBoard, addGroup, saveBoard } from '../store/slices/board-slice';
 import { AddBoardEntity } from '../cmps/AddBoardEntity';
 import { AnyAction } from 'redux';
 import { ThunkAction } from 'redux-thunk';
+import { Group } from '../models/group.model';
 
 export function Workspace() {
 
@@ -63,13 +64,20 @@ export function Workspace() {
         setEditInfo(editInfo)
     }
 
+    const groupsOrderUpdated = (groups: Group[]): void => {
+        console.log('groupOrderUpdated, groups:', groups);
+        const boardToSave = { ...currBoard, groups }
+        console.log('boardToSave', boardToSave);
+        dispatch(saveBoard({boardToSave, isUpdateCurr: true }))
+    }
+
     return (boards &&
         <section className="workspace flex grow">
             {miniBoards && <WorkspaceNav miniBoards={miniBoards} />}
             <div className="group-container flex flex-col grow">
                 <AddBoardEntity onAddGroup={onAddGroup} />
                 {/* BOARD HEADER WILL BE HERE */}
-                {currBoard && <GroupList sendEditInfo={sendEditInfo} boardId={currBoard._id} groups={currBoard.groups} />}
+                {currBoard && <GroupList groupsOrderUpdated={groupsOrderUpdated} sendEditInfo={sendEditInfo} boardId={currBoard._id} groups={currBoard.groups} />}
                 {editInfo && <TaskEdit editInfo={editInfo} />}
             </div>
 

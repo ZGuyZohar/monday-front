@@ -18,21 +18,22 @@ export function AddBoardEntity({ onAddGroup }: { onAddGroup: any }) {
 
     // }
 
-    const [state, setState] = useState({ dropdownAction: '' });
+    // const [state, setState] = useState({ dropdownAction: '' });
     const handleInput = (event: any) => {
         // setState({ ...state, [event.target.name]: event.target.value.trim() });
         switch (event.target.value) {
             case 'insertTable':
-                
+
                 break;
             case 'insertGroup':
                 onAddGroup()
                 break;
-        
+
             default:
                 break;
         }
-        
+        event.target.value = ''
+
     };
     // const selectElement = useRef<HTMLSelectElement>(null);
     // useEffect(() => {
@@ -49,7 +50,7 @@ export function AddBoardEntity({ onAddGroup }: { onAddGroup: any }) {
     //             break;
     //     }
     // }, [state.dropdownAction])
-    
+
     // <Dropdown splitButton={true} type="primary" onClick={handleClick} menu={(
     //     <Dropdown.Menu>
     //         <Dropdown.Item>Action 1</Dropdown.Item>

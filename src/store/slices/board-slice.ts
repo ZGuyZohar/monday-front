@@ -32,9 +32,9 @@ export const setCurrBoard = createAsyncThunk(
 
 export const saveBoard = createAsyncThunk(
     'SAVE_BOARD',
-    async (board: Board) => {
-        boardService.save(board);
-        return board
+    async ({ boardToSave, isUpdateCurr }: { boardToSave: any, isUpdateCurr: boolean }) => {
+        boardService.save(boardToSave);
+        return { boardToSave, isUpdateCurr }
     }
 )
 
@@ -93,13 +93,15 @@ export const boardSlice = createSlice({
         builder.addCase(setCurrBoard.fulfilled, (state, action) => {
             state.currBoard = action.payload
         })
-
         builder.addCase(saveBoard.fulfilled, (state, action) => {
-            const boardToSave = action.payload
+            const { boardToSave, isUpdateCurr } = action.payload
             if (boardToSave._id) {
                 const foundIdx = state.boards.findIndex(board => board._id === boardToSave._id)
+                console.log('boardToSave', boardToSave);
                 state.boards.splice(foundIdx, 1, boardToSave)
-            } else state.boards.push(action.payload)
+            } else state.boards.push(boardToSave)
+
+            if (isUpdateCurr) state.currBoard = boardToSave
         })
 
         builder.addCase(removeBoard.fulfilled, (state, action) => {

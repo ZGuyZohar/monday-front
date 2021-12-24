@@ -1,7 +1,7 @@
 import { Checklist } from "./checklist.model";
 
 export interface Task {
-    id?: string,
+    id: string,
     title: string,
     description: string,
     comments: [],
