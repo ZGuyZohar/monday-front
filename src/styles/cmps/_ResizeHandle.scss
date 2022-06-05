@@ -1,0 +1,9 @@
+.resize-handle {
+    width: 6px;
+    height: 40px;
+    background-color: grey;
+
+    &:hover {
+        cursor: e-resize;
+    }
+}

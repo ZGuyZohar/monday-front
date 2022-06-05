@@ -4,34 +4,37 @@
 // import { TaskDatePreview as DatePicker } from "./TaskPreviewCmps/TaskDatePreview";
 // import { TaskMemberPreview as MemberPicker } from "./TaskPreviewCmps/TaskMemberPreview";
 // import { DynamicCmp } from "../models/cmp.model";
-import { useEffect, useState } from "react"
+import { SyntheticEvent, useEffect, useState } from "react"
 import { FunctionBody } from "typescript";
+import { useFormRegister } from "../hooks/useFormRegister";
 import { boardService } from "../services/board-service"
 // const dynamicCmps: any = { StatusPicker, DatePicker, MemberPicker }
 
-export function TaskCompose({ addTask }: { addTask: any }) {
-    const [taskToEdit, setTaskToEdit] = useState(boardService.getEmptyTask())
+export function TaskCompose({ addTask, groupClr }: { addTask: any, groupClr: string }) {
+    // const [taskToEdit, setTaskToEdit] = useState(boardService.getEmptyTask())
+    const [taskToEdit, register, setTaskToEdit] = useFormRegister(boardService.getEmptyTask())
 
-    useEffect(() => {
-        console.log(taskToEdit.title);
-    }, [taskToEdit])
+    // useEffect(() => {
+    //     console.log(taskToEdit.title);
+    // }, [taskToEdit])
 
-    const handleSubmit = async ({ key }: { key: string }) => {
-        if (key !== 'Enter') return
-        console.log('Adding...');
+    const handleSubmit = async (ev: SyntheticEvent) => {
+        ev.preventDefault()
+        console.log('Adding...', taskToEdit);
         await addTask(taskToEdit)
         // **TODO- make sure addTask works before giving a new pointer.
         setTaskToEdit(() => boardService.getEmptyTask())
     }
 
-    const handleChange = ({ target }: { target: HTMLInputElement }) => {
-        const field = target.name;
-        const value = target.type === 'number' ? +target.value : target.value;
-        setTaskToEdit(prevTask => ({ ...prevTask, [field]: value }))
-    }
+    // const handleChange = ({ target }: { target: HTMLInputElement }) => {
+    //     const field = target.name;
+    //     const value = target.type === 'number' ? +target.value : target.value;
+    //     setTaskToEdit(prevTask => ({ ...prevTask, [field]: value }))
+    // }
     return (
-        <article className="task-compose">
-            <input type="text" placeholder="+ Add Item" value={taskToEdit.title} name="title" onChange={handleChange} onKeyUp={e => handleSubmit(e)} />
-        </article>
+        <form onSubmit={handleSubmit} className="task-compose">
+            <span className="left-indicator" style={{backgroundColor: groupClr}}></span>
+            <input type="text" placeholder="+ Add Item" {...register('title')} />
+        </form>
     )
 }

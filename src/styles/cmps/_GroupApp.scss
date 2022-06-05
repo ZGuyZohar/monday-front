@@ -1,8 +1,20 @@
 .group-app {
-    border: 1.5px solid black;
+    // border: 1.5px solid black;
     border-radius: 3px;
+    cursor: default;
+
     .main {
-        flex-grow: 1;
+        // flex-grow: 1;
         min-width: 500px;
+        height: 100%;
+    }
+
+    .group-header-title {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .group-drag-icon {
+        cursor: move;
     }
 }

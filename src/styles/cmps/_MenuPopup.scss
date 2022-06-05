@@ -1,0 +1,10 @@
+.menu-popup {
+    width: fit-content;
+    box-shadow: 0 4px 17px 6px rgba(3, 3, 3, 0.1);
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    bottom: 0;
+    transform: translateY(105%);
+    position: absolute;
+}

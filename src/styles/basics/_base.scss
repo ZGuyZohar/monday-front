@@ -4,7 +4,8 @@
 
 html {
   font-size: 16px;
-  font-family: 'Spartan-Regular';
+  // font-family: 'Spartan-Regular';
+  font-family: "Roboto";
 }
 
 html,
@@ -18,7 +19,7 @@ body {
   margin: 0;
   color: black;
   line-height: 1.785;
-  font-size: .875rem;
+  font-size: 0.875rem;
 }
 
 main,
@@ -33,6 +34,10 @@ p {
 
 a {
   text-decoration: none;
+
+  &.router-link-active {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
 }
 
 // h1,h2 etc...
@@ -47,8 +52,6 @@ li {
 }
 
 input {
-
-
   &:focus {
     outline-color: #51607985;
   }

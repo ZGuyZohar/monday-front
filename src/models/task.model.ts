@@ -12,6 +12,6 @@ export interface Task {
     style: {
         bgColor: string
     },
-    groupId: string | null,
-    boardId: string | undefined,
+    groupId: string,
+    boardId: string,
 }

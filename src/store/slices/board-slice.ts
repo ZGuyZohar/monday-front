@@ -1,24 +1,27 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Board } from '../../models/board.model'
 import { boardService } from '../../services/board-service'
 import type { RootState } from '..'
 import { Task } from '../../models/task.model'
 import { Group } from '../../models/group.model'
+import { BoardFilterBy } from '../../models/boardFilterBy.model'
 
 export interface BoardState {
-    boards: Board[],
-    currBoard: Board | null
+    boards: Board[]
+    currBoard: Board | null | undefined
+    filterBy: BoardFilterBy
 }
 
 const initialState: BoardState = {
     boards: [],
-    currBoard: null
+    currBoard: null,
+    filterBy: { title: '' }
 }
 
 export const loadBoards = createAsyncThunk(
     'SET_BOARDS',
-    async (filterBy: {} = {}) => {
-        return await boardService.query(filterBy)
+    async () => {
+        return await boardService.query()
     }
 )
 
@@ -26,9 +29,13 @@ export const setCurrBoard = createAsyncThunk(
     'SET_BOARD',
     async (boardId: string | undefined) => {
         if (!boardId) return
-        return await boardService.getById(boardId)
+        const board = await boardService.getById(boardId)
+        return board ? board : null
     }
 )
+
+// export const setFilterBy = createAction('SET_FILTERBY', (filterBy: BoardFilterBy): { payload: any } => ({ payload: filterBy }))
+export const setFilterBy = createAction<BoardFilterBy>('SET_FILTERBY')
 
 export const saveBoard = createAsyncThunk(
     'SAVE_BOARD',
@@ -72,6 +79,15 @@ export const addGroup = createAsyncThunk(
     }
 )
 
+export const addNewItem = createAsyncThunk(
+    'ADD_NEW_ITEM',
+    async (boardId: string | undefined) => {
+        // const boardId = "123"
+        const addedTask = await boardService.addNewItem(boardId);
+        return addedTask
+    }
+)
+
 
 export const boardSlice = createSlice({
     name: 'boards',
@@ -92,6 +108,10 @@ export const boardSlice = createSlice({
 
         builder.addCase(setCurrBoard.fulfilled, (state, action) => {
             state.currBoard = action.payload
+        })
+        builder.addCase(setFilterBy, (state, action) => {
+            console.log('action.payload', action.payload);
+            state.filterBy = action.payload
         })
         builder.addCase(saveBoard.fulfilled, (state, action) => {
             const { boardToSave, isUpdateCurr } = action.payload
@@ -131,6 +151,10 @@ export const boardSlice = createSlice({
             const addedGroup = action.payload
             state.currBoard?.groups.unshift(addedGroup)
         })
+        builder.addCase(addNewItem.fulfilled, (state, action) => {
+            const addedTask = action.payload
+            state.currBoard?.groups[0].tasks.unshift(addedTask)
+        })
     },
 })
 
@@ -138,5 +162,19 @@ export const boardSlice = createSlice({
 
 // Other code such as selectors can use the imported `RootState` type
 export const boards = (state: RootState) => state.boardSlice.boards
+export const boardForDisplay = (state: RootState) => getBoardForDisplay(state)
+
+function getBoardForDisplay(state: RootState) {
+    const boardCopy: Board | null = JSON.parse(JSON.stringify(state.boardSlice.currBoard))
+    const { title } = state.boardSlice.filterBy
+
+    if (title) {
+        const regex = new RegExp(title, 'i')
+        if (boardCopy?.groups) boardCopy.groups = boardCopy?.groups.map(g => {
+            return { ...g, tasks: g.tasks.filter(t => regex.test(t.title)) }
+        })
+    }
+    return boardCopy
+}
 
 export default boardSlice.reducer

@@ -1,0 +1,23 @@
+.workspace {
+    position: relative;
+
+    .add-board-entity-button {
+        width: fit-content;
+        background-color: #0073ea;
+        padding: 3px 7px;
+        border-radius: 3px;
+        color: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+
+        button:first-child {
+            border-right: 2px solid #0065c5;
+        }
+
+        .menu-popup {
+            color: rgb(50, 51, 56);
+        }
+    }
+}

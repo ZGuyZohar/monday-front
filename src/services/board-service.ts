@@ -9,6 +9,7 @@ import { Task } from '../models/task.model.js'
 import { Todo } from '../models/todo.model.js'
 import { storageService } from './async-storage-service'
 import { DynamicCmp } from '../models/cmp.model.js'
+import { utilService } from './util.service.js'
 
 
 // const BOARD_URL = '/board/'
@@ -28,7 +29,8 @@ export const boardService = {
     getEmptyCmp,
     saveTask,
     saveGroup,
-    addGroup
+    addGroup: _generateAddGroup(),
+    addNewItem
 }
 
 async function query(filterBy = {}) {
@@ -44,7 +46,7 @@ async function query(filterBy = {}) {
 
 function getById(id: string | undefined) {
     // return httpService.get(BOARD_URL + id)
-    return storageService.get(BOARD_KEY, id)
+    return storageService.get<Board>(BOARD_KEY, id)
 }
 
 function remove(id: string) {
@@ -66,6 +68,7 @@ function save(board: Board) {
 function getEmptyBoard(): Board {
     return {
         _id: '',
+        titleSize: 200,
         title: '',
         createdAt: Date.now(),
         createdBy: null,
@@ -74,7 +77,7 @@ function getEmptyBoard(): Board {
         groups: [],
         cmpsOrder: [
             {
-                id: _makeId(),
+                id: utilService.makeId(),
                 type: 'StatusPicker',
                 info: {
                     statuses: _getStatuses()
@@ -85,7 +88,7 @@ function getEmptyBoard(): Board {
                 }
             },
             {
-                id: _makeId(),
+                id: utilService.makeId(),
                 type: 'MemberPicker',
                 info: {
 
@@ -97,7 +100,7 @@ function getEmptyBoard(): Board {
                 }
             },
             {
-                id: _makeId(),
+                id: utilService.makeId(),
                 type: 'DatePicker',
                 info: {},
                 styles: {
@@ -112,10 +115,11 @@ function getEmptyBoard(): Board {
 function getEmptyGroup(): Group {
     return {
         id: '',
-        title: '',
+        title: 'New Group',
         tasks: [],
         style: {},
-        boardId: ''
+        boardId: '',
+        color: ''
     }
 }
 
@@ -172,22 +176,22 @@ function getEmptyStatus(): Status {
 function _getStatuses(): Status[] {
     return [
         {
-            id: _makeId(),
+            id: utilService.makeId(),
             status: 'Done',
             color: '#40d698'
         },
         {
-            id: _makeId(),
+            id: utilService.makeId(),
             status: 'Working on it',
             color: '#fdab3d'
         },
         {
-            id: _makeId(),
+            id: utilService.makeId(),
             status: 'Stuck',
             color: '#e2445c'
         },
         {
-            id: _makeId(),
+            id: utilService.makeId(),
             status: '',
             color: '#c4c4c4'
         },
@@ -203,14 +207,6 @@ function getEmptyCmp(): DynamicCmp {
     }
 }
 
-function _makeId(length: Number = 5): string {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    for (var i = 0; i < length; i++) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-    return text;
-}
 
 // function getColors() {}
 
@@ -218,6 +214,7 @@ function getMockBoard() {
     const board = getEmptyBoard()
     board.title = 'My Board'
     board.groups = [getEmptyGroup()]
+    board.groups[0].color = 'rgb(196, 196, 196)'
     board.groups[0].id = 'g101'
     board.groups[0].tasks = [getEmptyTask(), getEmptyTask()]
     board.groups[0].tasks[0].id = 't101'
@@ -237,24 +234,27 @@ function getMockBoard() {
 async function saveTask(task: Task) {
     const { groupId, boardId, id } = task
     const currBoard = await getById(boardId)
-    console.log(groupId, boardId, id, currBoard);
+    if (!currBoard) throw Error(`currBoard not found with id ${boardId}`)
 
     const groupIdx = currBoard.groups.findIndex((group: Group) => group.id === groupId)
-
+    if (!groupIdx) throw Error(`groupId ${groupId} does not exist on currBoard.groups`)
     const tasks = currBoard.groups[groupIdx].tasks
+
     if (task.id) {
-        const taskIdx = tasks.findIndex((task: Task) => task.id === id)
-        tasks.splice(taskIdx, 1, task)
+        const taskIdx = tasks?.findIndex((task: Task) => task.id === id)
+        if (!taskIdx) throw Error(`taskId ${id} does not exist on currBoard.groups[${groupIdx}]`)
+        tasks?.splice(taskIdx, 1, task)
         // return httpService.put(BOARD_URL + board._id, board)
         // return task
     } else {
-        task.id = _makeId()
-        tasks.push(task)
+        task.id = utilService.makeId()
+        tasks?.push(task)
         // return httpService.post(BOARD_URL, board)
         // storageService.post(BOARD_KEY, boards)
     }
+
     console.log('saving currBoard:', currBoard);
-    storageService.put(BOARD_KEY, currBoard)
+    storageService.put<Board>(BOARD_KEY, currBoard)
     return task
 }
 
@@ -275,12 +275,49 @@ async function saveGroup(group: Group) {
     return group
 }
 
-async function addGroup(boardId: string | undefined) {
-    console.log('insertGroup, boardId:', boardId);
+function _generateAddGroup() {
+    const _fillGroupClrs = () => {
+        groupClrs.push(
+            'rgb(255, 100, 46)',
+            'rgb(162, 93, 220)',
+            'rgb(3, 127, 76)',
+            'rgb(3, 127, 76)',
+            'rgb(226, 68, 92)',
+            'rgb(87, 155, 252)',
+            'rgb(253, 171, 61)',
+            'rgb(255, 21, 138)',
+            'rgb(196, 196, 196)'
+        )
+    }
+
+    const groupClrs: string[] = []
+    _fillGroupClrs()
+
+    return async (boardId: string | undefined) => {
+        console.log('insertGroup, boardId:', boardId);
+
+        const color = groupClrs.shift() as string
+        if (!groupClrs.length) _fillGroupClrs()
+
+        const board = await getById(boardId)
+        if (!board) throw Error(`Board not found with id ${boardId}`)
+        const addedGroup = { ...getEmptyGroup(), color }
+
+        addedGroup.id = utilService.makeId()
+        board.groups.unshift(addedGroup)
+        storageService.put(BOARD_KEY, board)
+        return Promise.resolve(addedGroup)
+    }
+}
+
+async function addNewItem(boardId: string | undefined) {
+    console.log('addNewItem, boardId:', boardId);
     const board = await getById(boardId)
-    const addedGroup = getEmptyGroup()
-    addedGroup.id = _makeId()
-    board.groups.unshift(addedGroup)
-    storageService.put(BOARD_KEY, board)
-    return addedGroup
+    if (!board) throw Error(`Board not found with id ${boardId}`)
+
+    const taskToInsert = { ...getEmptyTask(), id: utilService.makeId(), title: 'New Item' }
+    board.groups[0].tasks.unshift(taskToInsert)
+
+    await storageService.put(BOARD_KEY, board)
+    return Promise.resolve(taskToInsert)
 }

@@ -1,0 +1,23 @@
+.task-compose {
+    display: flex;
+
+    input {
+        width: 100%;
+        border: 1px solid rgb(208, 212, 228);
+
+        &:hover {
+            border: 1px solid rgb(50, 51, 56);
+        }
+
+        &:focus {
+            box-shadow: none;
+            // border: 1px solid #008ff5  x;
+            border: 1px solid #0073ea;
+        }
+    }
+
+    .left-indicator {
+        width: 8px;
+        height: 34px;
+    }
+}

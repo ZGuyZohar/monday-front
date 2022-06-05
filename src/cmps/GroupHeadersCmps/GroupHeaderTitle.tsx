@@ -1,18 +1,18 @@
 import { FunctionBody } from "typescript";
+import ReactTooltip from 'react-tooltip';
+import { Dispatch, MouseEventHandler, SetStateAction, SyntheticEvent, useEffect, useState } from "react";
+import ResizeHandle from '../ResizeHandle'
 
-export function GroupHeaderTitle({ title, groupTitleUpdated }: { title: string, groupTitleUpdated: any }) {
-    // make dynamic width with an initial value
+export function GroupHeaderTitle({ title, groupTitleUpdated, color, dragHandleProps, titleSize, setTitleSize, onTitleResize }: { title: string, groupTitleUpdated: any, color: string, dragHandleProps: any, titleSize: number, setTitleSize: Dispatch<SetStateAction<number>> | null, onTitleResize: (currSize: number) => void }) {
 
-    const handleChange = ({ target }: { target: HTMLInputElement }): void => {
-        console.log('handleChange target.value:', target.value);
-        // **ASK should i do it like that? i want to have event for updating group title, and i want to do it from
-        // a smart cmp like GroupApp.
-        groupTitleUpdated(target.value)
-    }
 
     return (
-        <div className="main">
-            <input type="text" value={title} onChange={handleChange} />
+        <div className="main group-header-title" style={{ minWidth: `${titleSize}px` }}>
+            <div style={{ color }}>
+                <span {...dragHandleProps} className="group-drag-icon" data-for="drag" data-tip="Drag group">X</span>
+                {title}</div>
+            <ReactTooltip id='drag' />
+            <ResizeHandle size={titleSize} setSize={setTitleSize} onUpCb={onTitleResize} />
         </div>
     )
 }

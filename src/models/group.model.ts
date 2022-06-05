@@ -6,4 +6,5 @@ export interface Group {
     tasks: Task[],
     style: Object,
     boardId: string
+    color: string
 }

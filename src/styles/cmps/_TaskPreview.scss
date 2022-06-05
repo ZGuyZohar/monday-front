@@ -1,4 +1,22 @@
 .task-preview {
-    background-color: grey;
-    padding: 5px;
+    // background-color: grey;
+    background-color: #f5f6f8;
+    // background-color: fcfdf;
+    color: $task-text;
+    font-size: 13px;
+    // padding: 5px;
+    // For preview bcg:
+    // border-bottom: 1px solid #fcfdfa;
+    // For the right cmps:
+    // background-color: #f5f6f8;
+
+    border-bottom: 1px solid #d7dae8;
+    margin-bottom: 1px;
+    // height: 36px;
+    align-items: center;
+
+    .left-indicator {
+        width: 8px;
+        height: 34px;
+    }
 }

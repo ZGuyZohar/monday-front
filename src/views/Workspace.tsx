@@ -1,24 +1,24 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { GroupList } from '../cmps/GroupList';
 import { TaskEdit } from '../cmps/TaskEdit';
 import { WorkspaceNav } from '../cmps/WorkspaceNav';
 import { useAppDispatch } from '../hooks/useAppDispatch';
 import { useAppSelector } from '../hooks/useAppSelector';
-import { useDidMountEffect } from '../hooks/useDidMountEffect';
 import { Board } from '../models/board.model';
 import { DynamicCmp } from '../models/cmp.model';
 import { MiniBoard } from '../models/mini-board.model';
-import { loadBoards, setCurrBoard, addGroup, saveBoard } from '../store/slices/board-slice';
-import { AddBoardEntity } from '../cmps/AddBoardEntity';
-import { AnyAction } from 'redux';
-import { ThunkAction } from 'redux-thunk';
+import { loadBoards, setCurrBoard, addGroup, saveBoard, addNewItem, setFilterBy, boardForDisplay, saveGroup } from '../store/slices/board-slice';
 import { Group } from '../models/group.model';
+import BoardHeader from '../cmps/BoardHeader';
+import { BoardFilterBy } from '../models/boardFilterBy.model';
+import Loader from '../cmps/Loader';
 
 export function Workspace() {
 
     const boards: Board[] = useAppSelector((state: any) => state.boardSlice.boards)
-    const currBoard: Board | null = useAppSelector((state: any) => state.boardSlice.currBoard)
+    // const currBoard: Board | null = useAppSelector((state: any) => state.boardSlice.currBoard)
+    const currBoard: Board | null = useAppSelector(boardForDisplay)
     const dispatch = useAppDispatch()
     const { boardId } = useParams()
     const navigate = useNavigate()
@@ -54,8 +54,18 @@ export function Workspace() {
         }
     }
 
-    const onAddGroup = (): any => {
+    const onAddGroup = () => {
         dispatch(addGroup(boardId))
+    }
+
+    const onAddNewItem = () => {
+        console.log('onAddNewItem()');
+        dispatch(addNewItem(boardId))
+    }
+
+    const onBoardFilter = (filterBy: BoardFilterBy) => {
+        console.log('onBoardFilter()', filterBy);
+        dispatch(setFilterBy(filterBy))
     }
 
     const sendEditInfo = (editInfo: any) => {
@@ -68,18 +78,33 @@ export function Workspace() {
         console.log('groupOrderUpdated, groups:', groups);
         const boardToSave = { ...currBoard, groups }
         console.log('boardToSave', boardToSave);
-        dispatch(saveBoard({boardToSave, isUpdateCurr: true }))
+        dispatch(saveBoard({ boardToSave, isUpdateCurr: true }))
     }
+
+    const [titleSize, setTitleSize] = useState(0)
+
+    useEffect(() => {
+        console.log('currBoard', currBoard);
+        if (currBoard) setTitleSize(currBoard.titleSize)
+    }, [currBoard])
+
+    const onTitleResize = useCallback((currSize: number): void => {
+        const boardToSave = { ...currBoard, titleSize: currSize }
+        dispatch(saveBoard({ boardToSave, isUpdateCurr: true }))
+    }, [currBoard])
 
     return (boards &&
         <section className="workspace flex grow">
             {miniBoards && <WorkspaceNav miniBoards={miniBoards} />}
-            <div className="group-container flex flex-col grow">
-                <AddBoardEntity onAddGroup={onAddGroup} />
-                {/* BOARD HEADER WILL BE HERE */}
-                {currBoard && <GroupList groupsOrderUpdated={groupsOrderUpdated} sendEditInfo={sendEditInfo} boardId={currBoard._id} groups={currBoard.groups} />}
-                {editInfo && <TaskEdit editInfo={editInfo} />}
-            </div>
+            {!currBoard && <Loader />}
+            {currBoard && <div className='board-container'>
+                <BoardHeader onBoardFilter={onBoardFilter} onAddGroup={onAddGroup} onAddNewItem={onAddNewItem} />
+                <div className="group-container flex flex-col grow">
+                    {/* BOARD HEADER WILL BE HERE */}
+                    {currBoard && <GroupList titleSize={titleSize} setTitleSize={setTitleSize} onTitleResize={onTitleResize} groupsOrderUpdated={groupsOrderUpdated} sendEditInfo={sendEditInfo} boardId={currBoard._id} groups={currBoard.groups} />}
+                    {editInfo && <TaskEdit editInfo={editInfo} />}
+                </div>
+            </div>}
 
         </section>
     )

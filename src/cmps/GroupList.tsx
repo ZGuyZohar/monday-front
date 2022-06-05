@@ -2,8 +2,10 @@ import { Group } from "../models/group.model"
 import { GroupApp } from "./GroupApp";
 import { reorder, getItemStyle, getListStyle } from "../services/dnd-service";
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-export function GroupList({ groups, sendEditInfo, boardId, groupsOrderUpdated }: { groups: Group[], sendEditInfo: any, boardId: string, groupsOrderUpdated: any }) {
+export function GroupList({ groups, sendEditInfo, boardId, groupsOrderUpdated, onTitleResize, titleSize, setTitleSize }: { groups: Group[], sendEditInfo: any, boardId: string, groupsOrderUpdated: any, onTitleResize: (currNumber: number) => void, titleSize: number, setTitleSize: Dispatch<SetStateAction<number>> | null }) {
+
     const onDragEnd = (result: any) => {
         console.log('onDragEnd', result);
 
@@ -30,14 +32,12 @@ export function GroupList({ groups, sendEditInfo, boardId, groupsOrderUpdated }:
                                         <div
                                             ref={provided.innerRef}
                                             {...provided.draggableProps}
-                                            {...provided.dragHandleProps}
                                             style={getItemStyle(
                                                 snapshot.isDragging,
                                                 provided.draggableProps.style
                                             )}
                                         >
-                                            <GroupApp key={group.id} group={group} boardId={boardId} sendEditInfo={sendEditInfo} />
-
+                                            <GroupApp onTitleResize={onTitleResize} titleSize={titleSize} setTitleSize={setTitleSize} dragHandleProps={provided.dragHandleProps} key={group.id} group={group} boardId={boardId} sendEditInfo={sendEditInfo} />
                                         </div>
                                     )}
                                 </Draggable>

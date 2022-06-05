@@ -12,13 +12,13 @@ interface TaskInfo {
     DatePicker: null | number
 }
 
-export function TaskPreview({ task, cmpsOrder, sendEditInfo }: { task: Task, cmpsOrder: DynamicCmp[] | undefined, sendEditInfo: any }) {
+export function TaskPreview({ task, cmpsOrder, sendEditInfo, groupClr, size }: { task: Task, cmpsOrder: DynamicCmp[] | undefined, sendEditInfo: any, groupClr: string, size: number }) {
 
     const getDynamicCmp = (cmp: DynamicCmp) => {
         const { type } = cmp
         const Cmp = dynamicCmps[type]
         const payload = getInfo(type)
-     
+
 
         payload.cmp = cmp
         return <Cmp key={cmp.id} sendEditInfo={sendEditInfo} payload={payload} />
@@ -30,13 +30,14 @@ export function TaskPreview({ task, cmpsOrder, sendEditInfo }: { task: Task, cmp
             MemberPicker: task.cmpMembersMap,
             DatePicker: task.dueDate
         }
-        
+
         return { taskInfo: taskInfo[type], cmp: null }
     }
 
     return (
         <article className="flex task-preview">
-            <TaskPreviewTitle title={task.title} />
+            <div className="left-indicator" style={{ backgroundColor: groupClr }}></div>
+            <TaskPreviewTitle size={size} title={task.title} />
             {cmpsOrder && cmpsOrder.map((cmp) => getDynamicCmp(cmp))}
         </article>
     )

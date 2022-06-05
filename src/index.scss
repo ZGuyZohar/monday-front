@@ -1,11 +1,9 @@
 //  SETUP
-
 @import "styles/setup/variables";
 @import "styles/setup/mixins";
 @import "styles/setup/typography";
 
 //  BASICS
-
 @import "styles/basics/base";
 @import "styles/basics/buttons";
 @import "styles/basics/forms";
@@ -16,7 +14,15 @@
 //  CMPS
 @import "styles/cmps/GroupApp";
 @import "styles/cmps/GroupHeaderCmps";
-@import "styles/cmps//TaskPreview";
+@import "styles/cmps/TaskPreview";
+@import "styles/cmps/MenuPopup";
+@import "styles/cmps/TaskCompose";
+@import "styles/cmps/Loader";
+@import "styles/cmps/AppNav";
+@import "styles/cmps/ResizeHandle";
+
+// VIEWS
+@import "styles/views/Workspace";
 
 @tailwind base;
 @tailwind components;
